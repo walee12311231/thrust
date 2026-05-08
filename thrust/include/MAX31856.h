@@ -4,7 +4,6 @@
 #include <SPI.h>
 #include <Adafruit_SPIDevice.h>
 
-// ── Register addresses ──────────────────────────────────────────────────────
 #define MAX31856_CR0_REG    0x00
 #define MAX31856_CR1_REG    0x01
 #define MAX31856_MASK_REG   0x02
@@ -22,7 +21,6 @@
 #define MAX31856_LTCBL_REG  0x0E
 #define MAX31856_SR_REG     0x0F
 
-// ── CR0 bit flags ───────────────────────────────────────────────────────────
 #define MAX31856_CR0_AUTOCONVERT 0x80
 #define MAX31856_CR0_1SHOT       0x40
 #define MAX31856_CR0_OCFAULT1    0x20
@@ -32,7 +30,6 @@
 #define MAX31856_CR0_FAULTCLR    0x02
 #define MAX31856_CR0_FILTER50HZ  0x01
 
-// ── Enumerations ────────────────────────────────────────────────────────────
 typedef enum {
     MAX31856_TCTYPE_B  = 0x00,
     MAX31856_TCTYPE_E  = 0x01,
@@ -56,13 +53,9 @@ typedef enum {
     MAX31856_NOISE_FILTER_50HZ = 1,
 } max31856_noise_filter_t;
 
-// ── Driver class ─────────────────────────────────────────────────────────────
 class MAX31856 {
 public:
-    // Software (bit-bang) SPI: cs, mosi, miso, clk
-    MAX31856(int8_t spi_cs, int8_t spi_mosi,
-             int8_t spi_miso, int8_t spi_clk);
-    // Hardware SPI
+    MAX31856(int8_t spi_cs, int8_t spi_mosi, int8_t spi_miso, int8_t spi_clk);
     MAX31856(int8_t spi_cs, SPIClass *_spi = &SPI);
 
     bool begin();
