@@ -53,7 +53,8 @@ public:
                   GyroRange  gyro  = GYRO_500,
                   uint16_t   calibration_samples = 1000);
 
-    void streamSample(Stream& out);
+    // Prints one CSV line: ax,ay,az,gx,gy,gz\n  (g and deg/s)
+    void streamCSV(Stream& out);
 
 private:
     bool writeReg(uint8_t reg, uint8_t value);

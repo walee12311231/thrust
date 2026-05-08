@@ -23,5 +23,5 @@ void loop() {
     const uint32_t now = millis();
     if (now - last_print_ms < PRINT_INTERVAL_MS) return;
     last_print_ms = now;
-    imu.streamSample(Serial);
+    imu.streamCSV(Serial);
 }

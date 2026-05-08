@@ -136,19 +136,15 @@ bool MPU6050::autoInit(Stream& log, int sda, int scl, uint32_t i2c_hz, AccelRang
     return false;
 }
 
-void MPU6050::streamSample(Stream& out) {
+void MPU6050::streamCSV(Stream& out) {
     Sample s;
-    if (!read(s)) { out.println("read failed"); return; }
-    out.print("a[g]=");
-    out.print(s.accel_g.x, 3); out.print(',');
-    out.print(s.accel_g.y, 3); out.print(',');
-    out.print(s.accel_g.z, 3);
-    out.print("  g[dps]=");
-    out.print(s.gyro_dps.x, 2); out.print(',');
-    out.print(s.gyro_dps.y, 2); out.print(',');
-    out.print(s.gyro_dps.z, 2);
-    out.print("  T[C]=");
-    out.println(s.temp_c, 2);
+    if (!read(s)) return;
+    out.print(s.accel_g.x, 4);  out.print(',');
+    out.print(s.accel_g.y, 4);  out.print(',');
+    out.print(s.accel_g.z, 4);  out.print(',');
+    out.print(s.gyro_dps.x, 3); out.print(',');
+    out.print(s.gyro_dps.y, 3); out.print(',');
+    out.println(s.gyro_dps.z, 3);
 }
 
 bool MPU6050::writeReg(uint8_t reg, uint8_t value) {
