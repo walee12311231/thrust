@@ -1,0 +1,20 @@
+# PlatformIO
+.pio/
+.platformio/
+build/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/

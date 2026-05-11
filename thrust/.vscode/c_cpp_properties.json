@@ -8,10 +8,9 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/include",
-                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/src",
-                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/lib/Sensors",
-                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/.pio/libdeps/pico/Adafruit BusIO",
+                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/thrust/include",
+                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/thrust/src",
+                "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/thrust/.pio/libdeps/pico/Adafruit BusIO",
                 "/Users/walkerlee/.platformio/packages/framework-arduinopico/libraries/Wire/src",
                 "/Users/walkerlee/.platformio/packages/framework-arduinopico/libraries/SPI/src",
                 "/Users/walkerlee/.platformio/packages/framework-arduinopico/cores/rp2040",
@@ -174,10 +173,9 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/include",
-                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/src",
-                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/lib/Sensors",
-                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/.pio/libdeps/pico/Adafruit BusIO",
+                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/thrust/include",
+                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/thrust/src",
+                    "/Users/walkerlee/Documents/PlatformIO/Projects/thrust/thrust/.pio/libdeps/pico/Adafruit BusIO",
                     "/Users/walkerlee/.platformio/packages/framework-arduinopico/libraries/Wire/src",
                     "/Users/walkerlee/.platformio/packages/framework-arduinopico/libraries/SPI/src",
                     "/Users/walkerlee/.platformio/packages/framework-arduinopico/cores/rp2040",
