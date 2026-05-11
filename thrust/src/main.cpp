@@ -4,18 +4,15 @@
 #include "MPU6050.h"
 #include "MAX31856.h"
 
-// I2C bus for MPU6050
 constexpr int PIN_SDA = 4;
 constexpr int PIN_SCL = 5;
 
-// Hardware SPI0 for MAX31856 (RP2040 default SPI0 pins)
-// SCK=GP2, MISO=GP0 (RX), MOSI=GP3 (TX), CS=GP1 — disjoint from I2C0 (GP4/GP5)
 constexpr int PIN_SPI_SCK  = 2;
 constexpr int PIN_SPI_MISO = 0;
 constexpr int PIN_SPI_MOSI = 3;
 constexpr int PIN_TC_CS    = 1;
 
-constexpr uint32_t PRINT_INTERVAL_MS = 20;  // 50 Hz
+constexpr uint32_t PRINT_INTERVAL_MS = 20;
 
 static MPU6050   imu(Wire);
 static MAX31856  tc(PIN_TC_CS, &SPI);
@@ -27,12 +24,10 @@ void setup() {
     const uint32_t deadline = millis() + 2000;
     while (!Serial && millis() < deadline) yield();
 
-    // Bring up MPU6050 on I2C0 (GP4/GP5)
     if (!imu.autoInit(Serial, PIN_SDA, PIN_SCL)) {
         while (true) yield();
     }
 
-    // Bring up hardware SPI0 on GP2/GP0/GP3 with GP1 as CS
     SPI.setSCK(PIN_SPI_SCK);
     SPI.setRX(PIN_SPI_MISO);
     SPI.setTX(PIN_SPI_MOSI);
