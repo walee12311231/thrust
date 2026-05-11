@@ -30,6 +30,8 @@
 #define MAX31856_CR0_FAULTCLR    0x02
 #define MAX31856_CR0_FILTER50HZ  0x01
 
+#define MAX31856_TC_TEMP_LSB 0.0078125f
+
 typedef enum {
     MAX31856_TCTYPE_B  = 0x00,
     MAX31856_TCTYPE_E  = 0x01,
@@ -56,7 +58,7 @@ typedef enum {
 class MAX31856 {
 public:
     MAX31856(int8_t spi_cs, int8_t spi_mosi, int8_t spi_miso, int8_t spi_clk);
-    MAX31856(int8_t spi_cs, SPIClass *_spi = &SPI);
+    MAX31856(int8_t spi_cs, SPIClass *_spi = &SPI, uint32_t spi_freq = 1000000);
 
     bool begin();
 
@@ -67,9 +69,16 @@ public:
     max31856_thermocoupletype_t getThermocoupleType();
 
     uint8_t readFault();
+    void    clearFault();
+
+    void setColdJunctionFaultThresholds(int8_t low, int8_t high);
+    void setTempFaultThresholds(float flow, float fhigh);
 
     void setColdJunctionFaultThreshholds(int8_t low, int8_t high);
     void setTempFaultThreshholds(float flow, float fhigh);
+
+    void setColdJunctionOffset(int8_t offset);
+
     void setNoiseFilter(max31856_noise_filter_t noiseFilter);
 
     void triggerOneShot();

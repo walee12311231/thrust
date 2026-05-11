@@ -1,12 +1,15 @@
 #include "MAX31856.h"
+#include <math.h>
 
 MAX31856::MAX31856(int8_t spi_cs, int8_t spi_mosi,
                                      int8_t spi_miso, int8_t spi_clk)
     : spi_dev(spi_cs, spi_clk, spi_miso, spi_mosi, 1000000,
-              SPI_BITORDER_MSBFIRST, SPI_MODE1) {}
+              SPI_BITORDER_MSBFIRST, SPI_MODE1),
+      initialized(false), conversionMode(MAX31856_ONESHOT) {}
 
-MAX31856::MAX31856(int8_t spi_cs, SPIClass *_spi)
-    : spi_dev(spi_cs, 1000000, SPI_BITORDER_MSBFIRST, SPI_MODE1, _spi) {}
+MAX31856::MAX31856(int8_t spi_cs, SPIClass *_spi, uint32_t spi_freq)
+    : spi_dev(spi_cs, spi_freq, SPI_BITORDER_MSBFIRST, SPI_MODE1, _spi),
+      initialized(false), conversionMode(MAX31856_ONESHOT) {}
 
 bool MAX31856::begin(void) {
   initialized = spi_dev.begin();
@@ -65,25 +68,38 @@ uint8_t MAX31856::readFault(void) {
   return readRegister8(MAX31856_SR_REG);
 }
 
-void MAX31856::setColdJunctionFaultThreshholds(int8_t low,
-                                                        int8_t high) {
+void MAX31856::clearFault(void) {
+  uint8_t t = readRegister8(MAX31856_CR0_REG);
+  t |= MAX31856_CR0_FAULTCLR;
+  writeRegister8(MAX31856_CR0_REG, t);
+}
+
+void MAX31856::setColdJunctionFaultThresholds(int8_t low, int8_t high) {
   writeRegister8(MAX31856_CJLF_REG, low);
   writeRegister8(MAX31856_CJHF_REG, high);
+}
+
+void MAX31856::setColdJunctionFaultThreshholds(int8_t low, int8_t high) {
+  setColdJunctionFaultThresholds(low, high);
+}
+
+void MAX31856::setColdJunctionOffset(int8_t offset) {
+  writeRegister8(MAX31856_CJTO_REG, offset);
 }
 
 void MAX31856::setNoiseFilter(max31856_noise_filter_t noiseFilter) {
   uint8_t t = readRegister8(MAX31856_CR0_REG);
 
   if (noiseFilter == MAX31856_NOISE_FILTER_50HZ) {
-    t |= 0x01;
+    t |= MAX31856_CR0_FILTER50HZ;
   } else {
-    t &= 0xFE;
+    t &= ~MAX31856_CR0_FILTER50HZ;
   }
 
   writeRegister8(MAX31856_CR0_REG, t);
 }
 
-void MAX31856::setTempFaultThreshholds(float flow, float fhigh) {
+void MAX31856::setTempFaultThresholds(float flow, float fhigh) {
   int16_t low;
   int16_t high;
 
@@ -100,9 +116,15 @@ void MAX31856::setTempFaultThreshholds(float flow, float fhigh) {
   writeRegister8(MAX31856_LTLFTL_REG, low);
 }
 
+void MAX31856::setTempFaultThreshholds(float flow, float fhigh) {
+  setTempFaultThresholds(flow, fhigh);
+}
+
 void MAX31856::triggerOneShot(void) {
   if (conversionMode == MAX31856_CONTINUOUS)
     return;
+
+  clearFault();
 
   uint8_t t = readRegister8(MAX31856_CR0_REG);
 
@@ -120,7 +142,8 @@ bool MAX31856::conversionComplete(void) {
 }
 
 float MAX31856::readCJTemperature(void) {
-  return readRegister16(MAX31856_CJTH_REG) / 256.0;
+  int16_t temp = readRegister16(MAX31856_CJTH_REG);
+  return temp / 256.0;
 }
 
 float MAX31856::readThermocoupleTemperature(void) {
@@ -137,6 +160,9 @@ float MAX31856::readThermocoupleTemperature(void) {
     }
   }
 
+  uint8_t fault = readFault();
+  if (fault) return NAN;
+
   int32_t temp24 = readRegister24(MAX31856_LTCBH_REG);
 
   if (temp24 & 0x800000) {
@@ -145,7 +171,7 @@ float MAX31856::readThermocoupleTemperature(void) {
 
   temp24 >>= 5;
 
-  return temp24 * 0.0078125;
+  return temp24 * MAX31856_TC_TEMP_LSB;
 }
 
 uint8_t MAX31856::readRegister8(uint8_t addr) {
