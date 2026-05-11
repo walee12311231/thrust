@@ -66,3 +66,4 @@ private:
     Vec3     _accel_offset;
     Vec3     _gyro_offset;
 };
+
