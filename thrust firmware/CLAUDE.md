@@ -57,3 +57,4 @@ The project is a sensor data acquisition firmware intended to read IMU and therm
 - Sensor drivers take a reference to the hardware bus object (`TwoWire&`, and eventually `SPIClass&`) in their constructor — do not instantiate the bus inside the driver.
 - All register constants are in an anonymous namespace in the `.cpp` file, not exposed in the header.
 - Return `bool` from all hardware I/O functions; never throw or assert on bus errors.
+
